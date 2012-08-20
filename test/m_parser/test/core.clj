@@ -44,6 +44,15 @@
     (is (= (first-combination "test")
            (second-combination "test")))))
 
+; (m-plus mv m-zero) produces mv
+; (m-plus m-zero mv) produces mv
+
+(deftest test-m-plus-law
+  (let [mv (fn [string]
+             (list [:thing string]))]
+    (is (= ((p-plus mv p-zero) "test")
+           ((p-plus p-zero mv) "test")))))
+
 ; Less mathematically-formal tests.
 
 (deftest test-make-char-parser
@@ -64,3 +73,20 @@
   (is (= (list [5 " cats"]) (p-int "5 cats")))
   (is (= (list [76 " trombones"]) (p-int "76 trombones")))
   (is (= (list [76 ".0"]) (p-int "76.0"))))
+
+(deftest test-p-plus
+  (let [parser (domonad parser-m [a-or-b (m-plus (make-char-parser \a :a)
+                                                 (make-char-parser \b :b))]
+                        a-or-b)]
+    (is (= (list [:a "bab"]) (parser "abab")))
+    (is (= (list [:b "aba"]) (parser "baba")))))
+
+(deftest test-p-optional
+  (let [parser (domonad parser-m [a (make-char-parser \a :a)
+                                  opt-b (p-optional (make-char-parser \b :b) :noop)
+                                  c (make-char-parser \c :c)]
+                        [a opt-b c])]
+    (is (= (list [[:a :b :c] "def"]) (parser "abcdef")))
+    (is (= (list [[:a :noop :c] "e"]) (parser "ace")))))
+
+(run-tests)
