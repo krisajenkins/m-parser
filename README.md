@@ -1,10 +1,8 @@
-m-parser
-========
+# m-parser
 
 A monadic parser for Clojure. Based on [Hutton & Meijer's paper][hutton].
 
-Status
-======
+## Status
 
 Incubating...
 
