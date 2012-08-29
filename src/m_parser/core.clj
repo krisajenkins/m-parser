@@ -52,3 +52,6 @@
   (if-let [[_ n remainder] (re-find #"^(\d+)(.*)" string)]
     (list [(Integer. n) remainder])
     (list)))
+
+(defmacro defparser [name steps expr]
+  `(def ~name (domonad parser-m ~steps ~expr)))
