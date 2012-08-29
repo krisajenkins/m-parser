@@ -1,4 +1,4 @@
-(defproject m-parser "0.1.0"
+(defproject org.clojars.krisajenkins/m-parser "0.1.0"
   :description "A monadic parser for Clojure"
   :url "https://github.com/krisajenkins/m-parser"
   :license {:name "Eclipse Public License"
