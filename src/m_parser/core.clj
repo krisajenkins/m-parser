@@ -42,6 +42,11 @@
       (list [value (. string (substring 1))])
       (list))))
 
+(defn any-char-parser [string]
+  (if-let [c (first string)]
+    (list [c (subs string 1)])
+    (list)))
+
 (defn make-string-parser [s value]
   (fn [string]
     (if (. string (startsWith s))
