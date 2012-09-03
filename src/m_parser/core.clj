@@ -24,6 +24,12 @@
   (fn [string]
     (mapcat #(% string) parsers)))
 
+(defn p-det [& parsers]
+  (fn [string]
+    (let [combination (apply p-plus parsers)
+          result (combination string)]
+      (take 1 result))))
+
 (defn p-optional [parser state]
   (fn [string]
     (let [result (parser string)]

@@ -74,12 +74,26 @@
   (is (= (list [76 " trombones"]) (p-int "76 trombones")))
   (is (= (list [76 ".0"]) (p-int "76.0"))))
 
-(deftest test-p-plus
+(deftest test-p-plus-basic
   (let [parser (domonad parser-m [a-or-b (m-plus (make-char-parser \a :a)
                                                  (make-char-parser \b :b))]
                         a-or-b)]
     (is (= (list [:a "bab"]) (parser "abab")))
     (is (= (list [:b "aba"]) (parser "baba")))))
+
+(deftest test-p-plus-ambiguous
+  (let [parser (domonad parser-m [a-or-b (m-plus (make-char-parser \a :a)
+                                                 any-char-parser)]
+                        a-or-b)]
+    (is (= (list [:a "bab"] [\a "bab"]) (parser "abab")))
+    (is (= (list [\b "aba"]) (parser "baba")))))
+
+(deftest test-p-det
+  (let [parser (domonad parser-m [a-or-b (p-det (make-char-parser \a :a)
+                                                 any-char-parser)]
+                        a-or-b)]
+    (is (= (list [:a "bab"]) (parser "abab")))
+    (is (= (list [\b "aba"]) (parser "baba")))))
 
 (deftest test-p-optional
   (let [parser (domonad parser-m [a (make-char-parser \a :a)
