@@ -42,7 +42,7 @@
                     m-zero p-zero
                     m-plus p-plus])
 
-(defn make-char-parser [chr value]
+(defn make-char-parser [value chr]
   (fn [string]
     (if (= (first string) chr)
       (list [value (. string (substring 1))])
@@ -53,7 +53,7 @@
     (list [c (subs string 1)])
     (list)))
 
-(defn make-string-parser [s value]
+(defn make-string-parser [value s]
   (fn [string]
     (if (. string (startsWith s))
       (list [value (. string (substring (count s)))])

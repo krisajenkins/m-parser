@@ -56,8 +56,8 @@
 ; Less mathematically-formal tests.
 
 (deftest test-make-char-parser
-  (let [p-a (make-char-parser \a :a)
-        p-b (make-char-parser \b :b)]
+  (let [p-a (make-char-parser :a \a)
+        p-b (make-char-parser :b \b)]
     (is (= (list [:a ""]) (p-a "a")))
     (is (= (list [:b ""]) (p-b "b")))
     (is (= (list [:a "bc"]) (p-a "abc")))
@@ -65,7 +65,7 @@
     (is (= (list) (p-a "")))))
 
 (deftest test-make-string-parser
-  (let [p-hello (make-string-parser "hello" :hi)]
+  (let [p-hello (make-string-parser :hi "hello")]
     (is (= (list [:hi " world"]) (p-hello "hello world")))
     (is (= (list) (p-hello "goodbye world")))))
 
@@ -75,30 +75,30 @@
   (is (= (list [76 ".0"]) (p-int "76.0"))))
 
 (deftest test-p-plus-basic
-  (let [parser (domonad parser-m [a-or-b (m-plus (make-char-parser \a :a)
-                                                 (make-char-parser \b :b))]
+  (let [parser (domonad parser-m [a-or-b (m-plus (make-char-parser :a \a)
+                                                 (make-char-parser :b \b))]
                         a-or-b)]
     (is (= (list [:a "bab"]) (parser "abab")))
     (is (= (list [:b "aba"]) (parser "baba")))))
 
 (deftest test-p-plus-ambiguous
-  (let [parser (domonad parser-m [a-or-b (m-plus (make-char-parser \a :a)
+  (let [parser (domonad parser-m [a-or-b (m-plus (make-char-parser :a \a)
                                                  any-char-parser)]
                         a-or-b)]
     (is (= (list [:a "bab"] [\a "bab"]) (parser "abab")))
     (is (= (list [\b "aba"]) (parser "baba")))))
 
 (deftest test-p-det
-  (let [parser (domonad parser-m [a-or-b (p-det (make-char-parser \a :a)
+  (let [parser (domonad parser-m [a-or-b (p-det (make-char-parser :a \a)
                                                  any-char-parser)]
                         a-or-b)]
     (is (= (list [:a "bab"]) (parser "abab")))
     (is (= (list [\b "aba"]) (parser "baba")))))
 
 (deftest test-p-optional
-  (let [parser (domonad parser-m [a (make-char-parser \a :a)
-                                  opt-b (p-optional (make-char-parser \b :b) :noop)
-                                  c (make-char-parser \c :c)]
+  (let [parser (domonad parser-m [a (make-char-parser :a \a)
+                                  opt-b (p-optional (make-char-parser :b \b) :noop)
+                                  c (make-char-parser :c \c)]
                         [a opt-b c])]
     (is (= (list [[:a :b :c] "def"]) (parser "abcdef")))
     (is (= (list [[:a :noop :c] "e"]) (parser "ace")))))
