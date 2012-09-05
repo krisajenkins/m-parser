@@ -102,5 +102,3 @@
                         [a opt-b c])]
     (is (= (list [[:a :b :c] "def"]) (parser "abcdef")))
     (is (= (list [[:a :noop :c] "e"]) (parser "ace")))))
-
-(run-tests)
