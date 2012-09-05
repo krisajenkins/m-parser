@@ -64,5 +64,17 @@
     (list [(Integer. n) remainder])
     (list)))
 
-(defmacro defparser [name steps expr]
-  `(def ~name (domonad parser-m ~steps ~expr)))
+(defn- arg-symbols
+  "Returns a list of symbols, '(%1 %2 %3 %4...)"
+  []
+  (map symbol (map #(symbol (str "%" %)) (rest (range)))))
+
+(defmacro defparser [name bindings action]
+  `(def ~name
+     (domonad parser-m ~(mapcat list
+                                (arg-symbols)
+                                (map #(cond
+                                        (instance? Character %) `(make-char-parser ~% ~%)
+                                        :else %)
+                                     bindings))
+              ~action)))
