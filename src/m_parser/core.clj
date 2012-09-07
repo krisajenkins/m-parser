@@ -1,11 +1,8 @@
 (ns m-parser.core
-  (:use [clojure.algo.monads :only [defmonad domonad sequence-m with-monad state-m m-chain]]))
+  (:use [clojure.algo.monads :only [defmonad domonad]]))
 
-; A parser is a function that takes a string, and returns a list of [:state ; "unparsed remainder"]
+; A parser is a function that takes a string, and returns a list of [:state, "unparsed remainder"]
 ; pairs. The resulting list may be empty, to indicate no matches.
-;
-; The monadic value is a parser.
-; The monadic function takes a state & returns a parser.
 
 (defn p-result [state]
   (fn [string]
